@@ -1,4 +1,5 @@
-const fetch = require('node-fetch');
+import fetch from 'node-fetch';
+import colors from 'colors';
 
 const processWeatherData = async data => {
   // [...data] makes copy of original array so only copy will be sorted
@@ -18,14 +19,13 @@ const processWeatherData = async data => {
   } = reversed[0];
 
   console.log(
-    `The warmest city right now is: ${warmestCity} with ${highestTemp}°C`,
-    `\nThe coldest city right now is: ${coldestCity} with ${lowestTemp}°C`,
+    `The warmest station right now is: ${warmestCity.bold.red} with ${highestTemp.red}°C`,
+    `\nThe coldest station right now is: ${coldestCity.bold.cyan} with ${lowestTemp.cyan}°C`,
     '\n----------------------------------------------------------',
   );
 
-  // eslint-disable-next-line no-restricted-syntax
   for (const { stacja: city, temperatura: temp } of sortedByTemp) {
-    console.log(`In ${city} is now ${temp}°C`);
+    console.log(`In ${city.bold} is now ${temp.bold.yellow}°C`);
   }
 };
 
@@ -39,4 +39,4 @@ const findWarmestCity = async () => {
   }
 };
 
-findWarmestCity();
+await findWarmestCity();

@@ -1,6 +1,7 @@
-const fetch = require('node-fetch');
-const { appendFile } = require('fs').promises;
-const { normalize, resolve } = require('path');
+import fetch from 'node-fetch';
+import { appendFile } from 'fs/promises';
+import { normalize, resolve } from 'path';
+import colors from 'colors';
 
 function safeJoin(base, target) {
   const targetPath = `.${normalize(`/${target}`)}`;
@@ -8,21 +9,20 @@ function safeJoin(base, target) {
 }
 
 const getDataFileName = city => safeJoin('./data/', `${city}.txt`);
+const userInput = process.argv[2];
 
 const processWeatherData = async (data, cityName) => {
-  // list of all available cities
-  if (process.argv[2] === 'List') {
-    // eslint-disable-next-line no-restricted-syntax
-    for (const city of data) {
-      console.log(city.stacja);
-    } return;
-  }
 
-  // 'stacja' is taken from api - must be same name which was used in api to use it
-  // same as  if (stationData.stacja === cityName) return true;
   const userCity = data.find(stationData => stationData.stacja === cityName);
   if (!userCity) {
-    throw new Error('No such city in our API. If you want to see available cities, use "List" as city name.');
+    if ( userInput === 'List' || userInput === 'list') {
+      // 'stacja' is taken from api - must be same name which was used in api to use it
+      for(const city of data){
+        console.log(city.stacja);
+      }
+      return;
+    }
+    throw new Error('No such city in our API. If you want to see available cities, use "List" or "list" as city name.');
   }
 
   // Destructuring and changing names to english
@@ -33,7 +33,7 @@ const processWeatherData = async (data, cityName) => {
   } = userCity;
 
   // showing weather info from chosen city
-  const weatherInfo = `In ${cityName} there is ${temp}°C, ${humidity}% of humidity and pressure of ${pressure} hPa`;
+  const weatherInfo = `In ${cityName.bold.bgGreen} is ${temp.bold}°C, ${humidity.bold}% of humidity and pressure of ${pressure.bold} hPa`;
   console.log(weatherInfo);
 
   // taking date and time of weather check
